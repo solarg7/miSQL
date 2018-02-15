@@ -47,7 +47,7 @@ function readProducts() {
         if (err) throw err;
         console.table(res);
 
-        console.log("otra compra?");
+        console.log("start again!");
                
         start();
 
@@ -95,9 +95,12 @@ function requestQuantity(product) {
                var updateData = res[indice].stock_quantity - requestedQuantity;
 
                updateProduct(product, updateData);
+
+               var sumaTotal = res[indice].price * requestedQuantity;
                
                console.log("Succefull purchase for:" + requestedQuantity + " "+ res[indice].product_name);                
                
+               console.log("Your Purchase Total Cost: $" + sumaTotal.toFixed(2));
                //readProducts();
                //console.log("product= " + res[indice].stock_quantity + " " + requestedQuantity);
                //continues(); 

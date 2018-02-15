@@ -71,25 +71,26 @@ function start() {
         }
     ).then(function(answers){
 
-        var product = answers.selectedProduct;
-        //connection.end();
-        requestQuantity(product);
+        // var product = answers.selectedProduct;
+        // //connection.end();
+        // requestQuantity(product);
 
-        switch (action){
-            case "my-tweets":
+        switch (answers.selectedOption){
             
-            getTweets();
+            case "seeInventory":
+            
+            readProducts();
             break;
     
-            case "spotify-this-song":
+            case "lowInventory":
             getSong();
             break;
     
-            case "movie-this":
+            case "addToInventory":
             getMovie();
             break;
     
-            case "do-what-it-says":
+            case "addNewProduct":
             getRandomAction();
             break;
             
