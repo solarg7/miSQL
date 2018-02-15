@@ -25,11 +25,11 @@ connection.connect(function(err) {
 
 function running() {
     //console.log("Selecting all products...\n");
-    connection.query("SELECT * FROM products", function(err, res) {
-        if (err) throw err;
-        console.table(res);
+    // connection.query("SELECT * FROM products", function(err, res) {
+    //     if (err) throw err;
+    //     console.table(res);
         start();
-    });
+    
 }
 
 function continues(){
@@ -44,7 +44,9 @@ function readProducts() {
     connection.query("SELECT * FROM products", function(err, res) {
         if (err) throw err;
         console.table(res);
+        start();
     });
+    
      
 }
 
@@ -53,6 +55,7 @@ function lowInventory() {
     connection.query("SELECT * FROM products WHERE stock_quantity<6", function(err, res) {
         if (err) throw err;
         console.table(res);
+        start();
     });
      
 }
@@ -83,15 +86,15 @@ function start() {
             break;
     
             case "lowInventory":
-            getSong();
+            lowInventory();
             break;
     
             case "addToInventory":
-            getMovie();
+            start2();
             break;
     
             case "addNewProduct":
-            getRandomAction();
+            addNewProduct();
             break;
             
         }
@@ -100,6 +103,56 @@ function start() {
 
       });
 };
+
+function addNewProduct() {
+    
+    inquirer.prompt(
+        {
+        type: "input",
+        name: "selectedProduct",
+        message: "What product do you like to buy - type Item_ID\n?"
+        }
+    ).then(function(answers){
+
+        var product = answers.selectedProduct;
+        //connection.end();
+        requestQuantity(product);
+
+      });
+};
+
+
+function addProduct() {
+    console.log("Inserting a new product...\n");
+
+
+
+
+    var query = connection.query(
+      "INSERT INTO products SET ?",
+      {
+        flavor: "Rocky Road",
+        price: 3.0,
+        quantity: 50
+      },
+      function(err, res) {
+        console.log(res.affectedRows + " product inserted!\n");
+        // Call updateProduct AFTER the INSERT completes
+        updateProduct();
+      }
+    );
+  
+    // logs the actual query being run
+    console.log(query.sql);
+  }
+
+function start2(){
+    connection.query("SELECT * FROM products", function(err, res) {
+        if (err) throw err;
+        console.table(res);
+        start1();
+    });
+}
 
 
 function start1() {
@@ -139,7 +192,7 @@ function requestQuantity(product) {
 
             var indice = product - 1;
             
-            if (res[indice].stock_quantity >= requestedQuantity){
+            if (res[indice].stock_quantity >= 0){
                var updateData = parseFloat(res[indice].stock_quantity) + parseFloat(requestedQuantity);
 
                updateProduct(product, updateData);
