@@ -106,45 +106,102 @@ function start() {
 
 function addNewProduct() {
     
-    inquirer.prompt(
+    inquirer.prompt([
         {
         type: "input",
-        name: "selectedProduct",
-        message: "What product do you like to buy - type Item_ID\n?"
+        name: "product_name",
+        message: "New Product Name\n?"
+        },
+        {
+            type: "input",
+            name: "department_name",
+            message: "Department of New Product\n?"
+        },
+        {
+            type: "input",
+            name: "price",
+            message: "Price of New Product\n?"
+        },
+        {
+            type: "input",
+            name: "stock_quantity",
+            message: "Quantity\n?"
         }
-    ).then(function(answers){
+    ]).then(function(answers){
 
-        var product = answers.selectedProduct;
+        var newProduct_Name = answers.product_name;
+        var newDepartment_Name = answers.department_name;
+        var newPrice = parseFloat(answers.price);
+        var newStock_Input = parseInt(answers.stock_quantity);
+
+
         //connection.end();
-        requestQuantity(product);
+        createProduct(newProduct_Name, newDepartment_Name, newPrice, newStock_Input);
 
       });
 };
 
-
-function addProduct() {
+function createProduct(newProductName, newDepartmentName, newProductPrice, newQuantity) {
     console.log("Inserting a new product...\n");
-
-
-
-
     var query = connection.query(
-      "INSERT INTO products SET ?",
-      {
-        flavor: "Rocky Road",
-        price: 3.0,
-        quantity: 50
-      },
-      function(err, res) {
-        console.log(res.affectedRows + " product inserted!\n");
-        // Call updateProduct AFTER the INSERT completes
-        updateProduct();
+      "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (newProductName, newDepartmentName, newProductPrice, newQuantity)", function (err, result){
+          if (err) throw err;
+          readProducts();
+
       }
     );
   
     // logs the actual query being run
-    console.log(query.sql);
-  }
+    //console.log(query.sql);
+}
+
+// function createProduct(newProductName, newDepartmentName, newProductPrice, newQuantity) {
+//     console.log("Inserting a new product...\n");
+//     var query = connection.query(
+//       "INSERT INTO products SET ?",
+//             {
+//         product_name: newProductName,
+//         department_name: newDepartmentName,
+//         price:newProductPrice,
+//         stock_quantity: newQuantity
+//       },
+//       function(err, res) {
+//         //console.log(res.affectedRows + " product inserted!\n");
+//         // Call updateProduct AFTER the INSERT completes
+//         readProducts();
+//       }
+//     );
+  
+//     // logs the actual query being run
+//     //console.log(query.sql);
+//   }
+
+
+// function addProduct(newProductName, newDepartmentName, newProductPrice, newQuantity) {
+//     console.log("Inserting a new product...\n");
+//     var query = connection.query(
+//       "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?",
+// [newProductName, newDepartmentName, newProductPrice, newQuantity],
+
+//     //   {
+//     //     product_name: newProductName,
+//     //     department_name: newDepartmentName,
+//     //     price: parseFloat(newProductPrice),
+//     //     stock_quantity: parseInt(newQuantity)
+//     //   },
+//       function(err, res) {
+//         //console.log(res.affectedRows + " product inserted!\n");
+//         // Call updateProduct AFTER the INSERT completes
+        
+//         if (err) throw err;
+//         start();
+//       }
+      
+//     );
+  
+//     // logs the actual query being run
+//     //console.log(query.sql);
+// }
 
 function start2(){
     connection.query("SELECT * FROM products", function(err, res) {
@@ -248,7 +305,3 @@ function updateProduct(product, requestedQuantity) {
     //readProducts(); 
 }
 
-function delayed (){
-    var myVar;
-    myVar = setTimeout(start(), 1000);
-}
